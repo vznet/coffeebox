@@ -3,10 +3,16 @@ var app = require('express').createServer();
 var http = require('http');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var sys = require('sys')
+var sys = require('sys');
+var Mustache = require('Mustache');
 
-var BASEDIR = process.cwd();
-var GENDIR = BASEDIR + "/var";
+
+var PROJECT_ROOT = process.cwd();
+var SRC_DIR = __dirname;
+var VIEW_DIR = SRC_DIR + "/../view";
+var GENDIR = PROJECT_ROOT + "/var";
+var PORT = 3000;
+
 
 app.configure(function(){
     app.use(express.methodOverride());
@@ -14,14 +20,31 @@ app.configure(function(){
     app.use(app.router);
 });
 
-app.get('/', function(req, res){
-  res.send('Server is up and running');
 
+app.get('/', function(req, res){
+    console.log('reading files in %s', GENDIR);
+    var view = {
+        file_list: []
+    }
+
+    fs.readdir(GENDIR, function(err, files){
+        for (i in files) {
+            var file = files[i];
+
+            if (!file.match(/^\..*/)) {
+                view.file_list.push(file);
+            }
+        }
+
+        res.send(Mustache.to_html( 
+                fs.readFileSync(VIEW_DIR + "/index.html", "utf8"), 
+                view));
+    }); 
 });
 
 app.get('/script/', function(req, res) {
     var file = GENDIR + "/generated.js";
-    var command = BASEDIR + "/bin/coffee -p " + file;
+    var command = PROJECT_ROOT + "/bin/coffee -p " + file;
 
     fs.writeFile(file, "square = (x) -> x * x", function(err) {
         if(err) {
@@ -57,6 +80,6 @@ app.get('/static/*', function(req, res){
 	});	
 });
 
-console.log('Basedir: %s', BASEDIR);
-app.listen(3000);
+console.log("starting server at port %s", PORT);
+app.listen(PORT);
 
