@@ -1,0 +1,7 @@
+/.installed.cfg
+/bin
+/parts
+/downloads
+/var
+/node_modules
+*.log
