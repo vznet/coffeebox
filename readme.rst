@@ -28,12 +28,7 @@ and check the running instance by::
 
 (stop it via ``bin/supervisorctl shutdown``)
 
-
-An instance of our application is started via::
-
-    bin/instance
-
-Check your browser at http://localhost:3000/
+Go reading to http://jashkenas.github.com/coffee-script/
 
 Force Reinstall
 ---------------
