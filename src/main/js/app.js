@@ -65,9 +65,35 @@ app.get('/', function(req, res){
     }); 
 });
 
+/**
+ * request a user-written coffee file
+ */
+app.get(/^\/script\/([^\.]+\.coffee)$/, function(req, res) {
+    var coffee_file = COFFEE_SRC + "/" + req.params[0];
+
+    console.log("reading coffee file %s", coffee_file);
+    res.end(fs.readFileSync(coffee_file, "utf8"));
+});
+
+/**
+ * request a compiled coffee file
+ */
+app.get(/^\/script\/([^\.]+\.js)$/, function(req, res) {
+    var js_file = COFFEE_COMPILE + "/" + req.params[0];
+
+    console.log("reading js file %s", js_file);
+    require(js_file);
+});
+
+/**
+ * write a coffee file by POST
+ */
 app.post('/script/', function(req, res) {
     var file = COFFEE_SRC + "/generated.js";
-    var command = PROJECT_ROOT + "/bin/coffee -p " + file;
+    var command = PROJECT_ROOT + "/bin/coffee "
+            + " -o " + PROJECT_ROOT + "/var/compiled/ "
+            + " -c " + + PROJECT_ROOT 
+            + " " + file;
 
     fs.writeFile(file, "square = (x) -> x * x", function(err) {
         if(err) {
@@ -85,22 +111,6 @@ app.post('/script/', function(req, res) {
             console.log('exec error: ' + error);
         }
     });
-});
-
-app.get('/static/*', function(req, res){
-  
-	// switch header by extension
-	if(req.url.substring(req.url.lastIndexOf("."),req.url.length) == ".html") {
-		res.writeHead(200, {'Content-Type': 'text/html'});
-	} else {
-		res.writeHead(200, {'Content-Type': 'text/javascript'});
-	}
-
-	console.log(req.url.substring(8,req.url.length));
-	fs.readFile("src/app/static/" + req.url.substring(8,req.url.length), "UTF-8",function (err, data) {
-	  	if (err) throw err;		
-		res.end(data + "\n");
-	});	
 });
 
 console.log("starting server at port %s", PORT);
