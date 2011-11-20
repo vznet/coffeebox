@@ -30,6 +30,21 @@ and check the running instance by::
 
 Go reading to http://jashkenas.github.com/coffee-script/
 
+Test The Coffee Compiler
+........................
+
+::
+    $ bin/coffee -p src/main/coffee/test.coffee
+
+    (function() {
+      var square;
+
+      square = function(x) {
+        return x * x;
+      };
+
+    }).call(this);
+
 Force Reinstall
 ---------------
 
