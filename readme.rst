@@ -28,6 +28,7 @@ Resources
 Go reading to 
 http://jashkenas.github.com/coffee-script/
 http://expressjs.com/guide.html
+http://bitdrift.com/post/2376383378/using-mustache-templates-in-express
 
 
 Test The Coffee Compiler

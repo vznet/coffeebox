@@ -9,7 +9,6 @@ var Mustache = require('Mustache');
 
 var PROJECT_ROOT = process.cwd();
 var SRC_DIR = __dirname;
-var VIEW_DIR = SRC_DIR + "/../view";
 var GENDIR = PROJECT_ROOT + "/var";
 var PORT = 3000;
 
@@ -18,27 +17,50 @@ app.configure(function(){
     app.use(express.methodOverride());
     app.use(express.bodyParser());
     app.use(app.router);
+    app.set("views", SRC_DIR + "/../view");
+    app.set("view options", {layout: false});
+    // token from http://bitdrift.com/post/2376383378/using-mustache-templates-in-express
+    app.register(".html", {
+        compile: function (source, options) {
+            if (typeof source == 'string') {
+                return function(options) {
+                    options.locals = options.locals || {};
+                    options.partials = options.partials || {};
+                    if (options.body) // for express.js > v1.0
+                        locals.body = options.body;
+                    return Mustache.to_html(
+                        source, options.locals, options.partials);
+                };
+            } else {
+                return source;
+            }
+        },
+        render: function (template, options) {
+            template = this.compile(template, options);
+            return template(options);
+        }
+    });
 });
 
-
+/**
+ * index handler that displays a list of files in ``/var``
+ */
 app.get('/', function(req, res){
     console.log('reading files in %s', GENDIR);
-    var view = {
-        file_list: []
-    }
+    var file_list = [];
 
     fs.readdir(GENDIR, function(err, files){
         for (i in files) {
             var file = files[i];
 
             if (!file.match(/^\..*/)) {
-                view.file_list.push(file);
+                file_list.push(file);
             }
         }
 
-        res.send(Mustache.to_html( 
-                fs.readFileSync(VIEW_DIR + "/index.html", "utf8"), 
-                view));
+        res.render("index.html", {
+            locals: {file_list: file_list}
+        });
     }); 
 });
 
