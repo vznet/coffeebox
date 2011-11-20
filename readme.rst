@@ -11,24 +11,24 @@ Setup A Working Environment
     python bootstrap.py
     bin/buildout -vN
 
-Please check your interactive part at (you need to type "yes" here)::
-
-    This script will find and eliminate any shims, symbolic
-    links, and other cruft that was installed by npm 0.x.
-
-    Is this OK? enter 'yes' or 'no' 
-
 
 Develop & Run
 -------------
 
-and check the running instance by::
+Manually start NodeJS::
 
-    bin/supervisorctl status
+    bin/node src/main/js/app.js
 
-(stop it via ``bin/supervisorctl shutdown``)
+and check http://localhost:3000/
 
-Go reading to http://jashkenas.github.com/coffee-script/
+
+Resources
+.........
+
+Go reading to 
+http://jashkenas.github.com/coffee-script/
+http://expressjs.com/guide.html
+
 
 Test The Coffee Compiler
 ........................
@@ -44,6 +44,7 @@ Test The Coffee Compiler
       };
 
     }).call(this);
+
 
 Force Reinstall
 ---------------

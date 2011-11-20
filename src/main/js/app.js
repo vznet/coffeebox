@@ -33,9 +33,9 @@ app.get('/script/', function(req, res) {
 
     console.log('execute "%s"', command);
     child = exec(command, function (error, stdout, stderr) {
-        sys.print('stdout: ' + stdout);
-        sys.print('stderr: ' + stderr);
+        sys.print('generated: \n', stdout);
         if (error !== null) {
+            sys.print('stderr: ' + stderr);
             console.log('exec error: ' + error);
         }
     });
