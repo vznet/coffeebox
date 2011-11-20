@@ -2,6 +2,8 @@ var express = require('express');
 var app = require('express').createServer();
 var http = require('http');
 var fs = require('fs');
+var exec = require('child_process').exec;
+var sys = require('sys')
 
 var BASEDIR = process.cwd();
 var GENDIR = BASEDIR + "/var";
@@ -19,14 +21,24 @@ app.get('/', function(req, res){
 
 app.get('/script/', function(req, res) {
     var file = GENDIR + "/generated.js";
+    var command = BASEDIR + "/bin/coffee -p " + file;
 
-    fs.writeFile(file, "Hey there!", function(err) {
+    fs.writeFile(file, "square = (x) -> x * x", function(err) {
         if(err) {
             console.log(err);
         } else {
             console.log("The file %s was saved!", file);
         }
     }); 
+
+    console.log('execute "%s"', command);
+    child = exec(command, function (error, stdout, stderr) {
+        sys.print('stdout: ' + stdout);
+        sys.print('stderr: ' + stderr);
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });
 });
 
 app.get('/static/*', function(req, res){
