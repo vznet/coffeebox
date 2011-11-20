@@ -1,6 +1,10 @@
 var express = require('express');
 var app = require('express').createServer();
 var http = require('http');
+var fs = require('fs');
+
+var BASEDIR = process.cwd();
+var GENDIR = BASEDIR + "/var";
 
 app.configure(function(){
     app.use(express.methodOverride());
@@ -10,6 +14,19 @@ app.configure(function(){
 
 app.get('/', function(req, res){
   res.send('Server is up and running');
+
+});
+
+app.get('/script/', function(req, res) {
+    var file = GENDIR + "/generated.js";
+
+    fs.writeFile(file, "Hey there!", function(err) {
+        if(err) {
+            console.log(err);
+        } else {
+            console.log("The file %s was saved!", file);
+        }
+    }); 
 });
 
 app.get('/static/*', function(req, res){
@@ -28,4 +45,6 @@ app.get('/static/*', function(req, res){
 	});	
 });
 
+console.log('Basedir: %s', BASEDIR);
 app.listen(3000);
+
