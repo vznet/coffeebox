@@ -9,7 +9,8 @@ var Mustache = require('Mustache');
 
 var PROJECT_ROOT = process.cwd();
 var SRC_DIR = __dirname;
-var GENDIR = PROJECT_ROOT + "/var";
+var COFFEE_SRC = PROJECT_ROOT + "/var/coffee";
+var COFFEE_COMPILE = PROJECT_ROOT + "/var/compiled";
 var PORT = 3000;
 
 
@@ -46,10 +47,10 @@ app.configure(function(){
  * index handler that displays a list of files in ``/var``
  */
 app.get('/', function(req, res){
-    console.log('reading files in %s', GENDIR);
+    console.log('reading files in %s', COFFEE_SRC);
     var file_list = [];
 
-    fs.readdir(GENDIR, function(err, files){
+    fs.readdir(COFFEE_SRC, function(err, files){
         for (i in files) {
             var file = files[i];
 
@@ -64,8 +65,8 @@ app.get('/', function(req, res){
     }); 
 });
 
-app.get('/script/', function(req, res) {
-    var file = GENDIR + "/generated.js";
+app.post('/script/', function(req, res) {
+    var file = COFFEE_SRC + "/generated.js";
     var command = PROJECT_ROOT + "/bin/coffee -p " + file;
 
     fs.writeFile(file, "square = (x) -> x * x", function(err) {
